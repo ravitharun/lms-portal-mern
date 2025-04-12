@@ -1,0 +1,73 @@
+Essential Fields for Attendance Submission:
+📅 Date Selection – Choose the date for attendance.
+
+📍 Class Mode – Select whether the class was Online or Offline.
+
+📖 Topics Covered – Faculty should enter what was taught today.
+
+✅ Student Attendance – Checkbox list for marking students as Present or Absent.
+
+🕒 Time Duration – Faculty can enter class timing (e.g., 10:00 AM - 11:30 AM).
+
+📌 Additional Notes (Optional) – Space to write extra details (e.g., announcements, assignments).
+
+📤 Submit Button – To finalize and save attendance data.
+
+
+
+/////////////////////////
+
+✅ What Your Attendance Model Should Include?
+1️⃣ studentID → References the existing Student's ID (from the User model).
+2️⃣ date → Stores the date of attendance.
+3️⃣ mode → Specifies Offline/Online class mode.
+4️⃣ topicsCovered → Faculty can enter what was taught in class.
+5️⃣ status → Marks Present/Absent.
+
+
+
+
+////////////////////////////upload course
+
+
+
+Course Title
+
+Course Code (e.g., CS101, ME202)
+
+Department (CSE, ECE, ME, etc.)
+
+Semester Selection (1st, 2nd, etc.)
+
+Course Description
+
+Upload Course Materials (PDFs, PPTs, Docs, Assignments, etc.)
+
+
+
+////////////////////////
+Full Name
+
+Email
+
+Profile Photo
+
+Phone Number
+
+Department
+
+Subjects Taught
+
+Experience (Years)
+
+LinkedIn/GitHub (optional)
+
+About/Bio
+
+
+
+
+
+
+
+

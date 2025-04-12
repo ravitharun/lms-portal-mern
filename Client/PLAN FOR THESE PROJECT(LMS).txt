@@ -1,0 +1,41 @@
+1. Login Page Requirements:
+✅ Fields:
+
+Email
+Password
+✅ Features:
+
+Role selection (Student/Instructor) (optional, if needed)
+Password validation (min 6 characters, at least one number & special character)
+Error handling for incorrect credentials
+"Forgot Password" option
+"Remember Me" checkbox (optional)
+Redirect to dashboard based on role after successful login
+✅ Backend Requirements:
+
+Verify email & password with database
+Password hashing verification (bcrypt)
+Generate & return JWT token for authentication
+Store session/token in local storage or cookies
+2. Create Account Page Requirements:
+✅ Fields:
+
+Full Name
+Email
+Password
+Confirm Password
+Role selection (Student/Instructor)
+✅ Features:
+
+Password & Confirm Password validation
+Unique email verification
+Show/hide password toggle
+Error messages for invalid inputs
+Success message on registration
+Auto-login after successful registration (optional)
+✅ Backend Requirements:
+
+Hash password before storing (bcrypt)
+Store user details in MongoDB (User Schema)
+Send verification email (optional)
+Generate JWT token after successful signup
