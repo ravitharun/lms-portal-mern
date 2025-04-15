@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Auth from "./Auth";
 import Navbar from "../Navbar";
-import toast, { Toaster } from 'react-hot-toast';
+import  { Toaster } from 'react-hot-toast';
 
 function Dashboard() {
   const [students, setStudents] = useState([]);

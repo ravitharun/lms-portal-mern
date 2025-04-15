@@ -59,6 +59,9 @@ function Navbar() {
         localStorage.removeItem("Id"); // Clear role from storage
         localStorage.removeItem("Profile"); // Clear role from storage
         localStorage.removeItem("Faculty"); // Clear role from storage
+        localStorage.removeItem("isLogin"); // Clear role from storage
+        localStorage.removeItem("CourseId"); // Clear role from storage
+        localStorage.removeItem("Course"); // Clear role from storage
         window.location.reload();
         setRole(""); // Reset role in state
       }
