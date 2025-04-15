@@ -44,14 +44,17 @@ const Profile = new mongoose.Schema({
 
 const course = new mongoose.Schema({
     course: { type: String },
-    coursecode: { type: String },    email: { type: String },Description: { type: String }, semester: { type: String }, InstructorName: { type: String }, File: { type: String }, Department: { type: String }, date: {
+    coursecode: { type: String }, email: { type: String }, Description: { type: String }, semester: { type: String }, InstructorName: { type: String }, File: { type: String }, Department: { type: String }, date: {
         type: Date,
         default: Date.now, // Correct way to set default date
     },
 
 })
+
+const CourseAssignment = new mongoose.Schema({ Student: { type: String }, StudentEmail: { type: String }, selectedInstructor: { type: String } })
 const user = mongoose.model('UserSchema', UserSchema);
 const StudentAttendance = mongoose.model('Attendance', Attendance);
 const UploadCourse = mongoose.model('UploadCourse', course);
 const profile = mongoose.model("Profile", Profile);
-module.exports = { user, StudentAttendance, UploadCourse, conn, mongoURI, profile };
+const Course = mongoose.model("CourseAssignment", CourseAssignment);
+module.exports = { user, StudentAttendance, UploadCourse, conn, mongoURI, profile,Course };

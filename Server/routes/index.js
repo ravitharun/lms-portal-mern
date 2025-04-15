@@ -4,7 +4,7 @@ var cors = require('cors')
 const multer = require("multer");
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require("gridfs-stream");
-const { user, StudentAttendance, UploadCourse, conn, mongoURI, profile, } = require("../bin/database")
+const { user, StudentAttendance, UploadCourse, conn, mongoURI, profile, Course } = require("../bin/database")
 router.use(cors())
 const mongoose = require('mongoose');
 
@@ -33,7 +33,8 @@ router.post("/LMS/new", async (req, res) => {
       CurrentProgarm,
       CurrentDepatment, } = req.body
     // checking the password and confirm password
-    console.log("DATA", { name, email, password, confirmPassword, role, profile })
+
+    
     if (password != confirmPassword) {
       res.json({ message: "Password is incorrect" })
 
@@ -64,9 +65,12 @@ router.post("/LMS/new", async (req, res) => {
 
 router.post("/LMS/login", async (req, res) => {
   const { email, password, Role } = req.body
-  console.log({ email, password, Role })
+ 
+  
   const check_user = await user.findOne({ email: email, password: password, role: Role })
-  console.log(check_user)
+
+  
+
   if (check_user == null) {
     res.json({ message: "User not Found !" })
   }
@@ -77,15 +81,16 @@ router.post("/LMS/login", async (req, res) => {
 
 })
 
-router.get("/lms/emails",async(req,res)=>{
+router.get("/lms/emails", async (req, res) => {
   try {
-    const getemail=await  user.find({role:"Faculty"}).select("email")
-
-   res.json({message:getemail})
+    const GetInstructorName = await UploadCourse.find({}).select("InstructorName")
+ 
+    
+    res.json({GetInstructorName})
 
 
   } catch (error) {
-    
+
   }
 })
 // user logout
@@ -156,7 +161,7 @@ router.post("/LMS/UploadCourse", upload.single("File"), async (req, res) => {
   try {
     const { data } = req.body
     const Newcourse = new UploadCourse({
-      email:data.email,
+      email: data.email,
       course: data.course,
       coursecode: data.coursecode,
       Description: data.Description,
@@ -172,12 +177,12 @@ router.post("/LMS/UploadCourse", upload.single("File"), async (req, res) => {
     console.log(error)
   }
 })
-router.post("/lms/basedemail/course",async(req,res)=>{
+router.post("/lms/basedemail/course", async (req, res) => {
 
-  const{Faculty}=req.body
+  const { Faculty } = req.body
   try {
-  const response=await UploadCourse.find({email:Faculty})  
-  res.json({message:response})
+    const response = await UploadCourse.find({ email: Faculty })
+    res.json({ message: response })
   } catch (error) {
     console.log(error)
   }
@@ -185,8 +190,9 @@ router.post("/lms/basedemail/course",async(req,res)=>{
 
 // getting the  all course data
 router.get("/LMS/UploadCourse", async (req, res) => {
-  const{Faculty}=req.body
+  const { Faculty } = req.body
   try {
+
     const response = await UploadCourse.find({})
     res.json({ message: response })
   } catch (error) {
@@ -259,12 +265,47 @@ router.post("/lms/edit", async (req, res) => {
       { new: true } // optional: returns the updated document
     );
 
-    console.log(edttied)
+  
+
     res.json({ message: edttied })
   }
   catch (err) {
     console.log(err)
   }
 })
+// assging the course to the student
+router.post("/LMS/AssignCourse", async (req, res) => {
+  try {
+    const { data } = req.body
+    const AssignCourse = new Course({
+      Student: data.Student,
+      StudentEmail: data.StudentEmail,
+      selectedInstructor: data.selectedInstructor
+    })
+    
+    const response = await UploadCourse.find({ InstructorName: AssignCourse.selectedInstructor })
+    res.json({ message:  AssignCourse })
+
+    await AssignCourse.save()
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+// getting data 
+router.get("/LMS/AssignedCourse", async (req, res) => {
+  try {
+    const { Course } = req.query; // ✅ read from query, not body
+    const response = await UploadCourse.find({ InstructorName: Course });
+
+    console.log("Fetched Assigned Course");
+
+    res.json({ message: response });
+  } catch (error) {
+    console.log("Error fetching assigned course:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+  
 
 module.exports = router;
