@@ -34,7 +34,7 @@ router.post("/LMS/new", async (req, res) => {
       CurrentDepatment, } = req.body
     // checking the password and confirm password
 
-    
+
     if (password != confirmPassword) {
       res.json({ message: "Password is incorrect" })
 
@@ -65,11 +65,11 @@ router.post("/LMS/new", async (req, res) => {
 
 router.post("/LMS/login", async (req, res) => {
   const { email, password, Role } = req.body
- 
-  
+
+
   const check_user = await user.findOne({ email: email, password: password, role: Role })
 
-  
+
 
   if (check_user == null) {
     res.json({ message: "User not Found !" })
@@ -84,9 +84,9 @@ router.post("/LMS/login", async (req, res) => {
 router.get("/lms/emails", async (req, res) => {
   try {
     const GetInstructorName = await UploadCourse.find({}).select("InstructorName")
- 
-    
-    res.json({GetInstructorName})
+
+
+    res.json({ GetInstructorName })
 
 
   } catch (error) {
@@ -265,7 +265,7 @@ router.post("/lms/edit", async (req, res) => {
       { new: true } // optional: returns the updated document
     );
 
-  
+
 
     res.json({ message: edttied })
   }
@@ -273,20 +273,40 @@ router.post("/lms/edit", async (req, res) => {
     console.log(err)
   }
 })
+
+
+
+
 // assging the course to the student
 router.post("/LMS/AssignCourse", async (req, res) => {
+
   try {
     const { data } = req.body
-    const AssignCourse = new Course({
-      Student: data.Student,
-      StudentEmail: data.StudentEmail,
-      selectedInstructor: data.selectedInstructor
-    })
-    
-    const response = await UploadCourse.find({ InstructorName: AssignCourse.selectedInstructor })
-    res.json({ message:  AssignCourse })
 
-    await AssignCourse.save()
+    console.log(data.StudentEmail)
+    const email = await Course.findOne({ StudentEmail: data.StudentEmail })
+    console.log(email)
+    if (email) {
+      return res.json({ message: "You have already filled the form" })
+    }
+    else {
+      // checking the data is empty or not
+      if (data.Student == "" || data.StudentEmail == "" || data.selectedInstructor == "") {
+        res.json({ message: "FILL THE REQUIRED DETAILS" })
+      } else {
+        const AssignCourse = new Course({
+          Student: data.Student,
+          StudentEmail: data.StudentEmail,
+          selectedInstructor: data.selectedInstructor,
+
+        })
+        const response = await UploadCourse.find({ InstructorName: AssignCourse.selectedInstructor })
+        res.json({ message: AssignCourse, })
+        await AssignCourse.save()
+      
+      }
+
+    }
   } catch (error) {
     console.log(error)
   }
@@ -298,14 +318,16 @@ router.get("/LMS/AssignedCourse", async (req, res) => {
     const { Course } = req.query; // ✅ read from query, not body
     const response = await UploadCourse.find({ InstructorName: Course });
 
-    console.log("Fetched Assigned Course");
 
+    console.log(response)
+
+    console.log("Fetched Assigned Course");
     res.json({ message: response });
   } catch (error) {
     console.log("Error fetching assigned course:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-  
+
 
 module.exports = router;

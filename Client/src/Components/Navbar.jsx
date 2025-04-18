@@ -73,12 +73,10 @@ function Navbar() {
   useEffect(() => {
     const getimg = async () => {
       const id = localStorage.getItem("Profile");
-      console.log(id);
       const response = await axios.get("http://localhost:3000/lms/getprofile", {
         params: { id },
       });
       SetProfileimg(response.data.data);
-      console.log(response.data.data);
       SetUserName(response.data.data.FullName);
     };
     getimg();

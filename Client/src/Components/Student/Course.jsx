@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import axios from "axios";
 import Auth from "../Admin/Auth";
 import toast, { Toaster } from "react-hot-toast";
-import { ReceiptRefundIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
 function Course() {
   const [Student, SetStudent] = useState("");
@@ -12,7 +12,8 @@ function Course() {
   const [selectedInstructor, setInstructor] = useState("");
   const [StudentInstructors, SetStudentInstructors] = useState([]);
   const [Course, Setcourse] = useState([]);
-  const [Selected, SetSelected] = useState(true);
+  const [Selected, SetSelected] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const GetAllInstructors = async () => {
@@ -27,6 +28,7 @@ function Course() {
     GetAllInstructors();
   }, []);
 
+  // form sending data to the backend
   const SendData = async (event) => {
     event.preventDefault();
     const data = { Student, StudentEmail, selectedInstructor };
@@ -44,12 +46,17 @@ function Course() {
         }
       );
       Setcourse(response.data.data);
-      localStorage.setItem("CourseId", response.data.message._id);
-      localStorage.setItem("Course", response.data.message.selectedInstructor);
-      localStorage.setItem("Student", "true");
+      console.log(response.data.message);
+      if(response.data.message === "You have already filled the form") {
+        toast.error("You have already filled the form");  
+      }
+      else{
 
-      toast.success("Course Assigned Successfully");
-      SetSelected(false);
+        localStorage.setItem("CourseId", response.data.message._id);
+        localStorage.setItem("Course", response.data.message.selectedInstructor);
+        SetSelected(true);
+        toast.success("Course Assigned Successfully");
+      }
 
       // Optional: Reset form
       SetStudent("");
@@ -60,7 +67,25 @@ function Course() {
       console.error(error);
     }
   };
+  // checking the local storage for the course id and course name
+  useEffect(() => {
+    const check = async () => {
+      let CourseId = localStorage.getItem("CourseId");
+      let courseName = localStorage.getItem("Course");
+    
+     
+      if (CourseId == null && courseName == null) {
+        toast.error("Fill The Course Details");
+        SetSelected(false);
+      }  else {
+        toast.success("Course Assigned Successfully");
+        SetSelected(true);
+      }
+    };
+    check();
+  }, []);
 
+  // fetching the course data from the backend
   useEffect(() => {
     const fetch = async () => {
       const Course = localStorage.getItem("Course");
@@ -74,7 +99,6 @@ function Course() {
         );
 
         Setcourse(response.data.message);
-        console.log(response.data.message);
       } catch (error) {
         console.error("Failed to fetch assigned course:", error);
       }
@@ -82,9 +106,12 @@ function Course() {
 
     fetch();
   }, []);
+  // function to display the course details
+  const Diplay = async () => {
+    navigate("/CourseDisply", { state: Course });
+  };
 
-  const isCourseFilled = localStorage.getItem("Student") === "true";
-
+  // React Code to display the course details
   return (
     <>
       <div className="sticky top-0 z-50 bg-white shadow">
@@ -95,7 +122,7 @@ function Course() {
       <Toaster position="top-center" reverseOrder={false} />
 
       <div className="min-h-screen flex flex-col bg-gray-100">
-        {!isCourseFilled ? (
+        {!Selected ? (
           <div className="w-full md:w-1/2 flex items-center justify-center p-10 bg-white shadow-lg mx-auto my-10 rounded-xl">
             <div className="w-full max-w-md">
               <h2 className="text-3xl font-bold mb-6 text-blue-700 text-center">
@@ -172,7 +199,7 @@ function Course() {
                 <img
                   src="https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg?ga=GA1.1.1870812209.1738312432&semt=ais_hybrid&w=740" // Replace with real image URL
                   alt="Course"
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  className="w-full h-48 object-cover rounded-t-lg  hover:bg-red-400"
                 />
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-blue-700">
@@ -182,10 +209,13 @@ function Course() {
                     Instructor: {data.InstructorName}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Course Name: {data.CourseName}
+                    Course Name: {data.course}
                   </p>
                   <div className="mt-4 flex justify-between items-center">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                    <button
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                      onClick={Diplay}
+                    >
                       View Details
                     </button>
                   </div>
@@ -195,7 +225,6 @@ function Course() {
           </div>
         )}
       </div>
-
       <Footer />
     </>
   );

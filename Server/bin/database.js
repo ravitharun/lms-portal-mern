@@ -51,7 +51,14 @@ const course = new mongoose.Schema({
 
 })
 
-const CourseAssignment = new mongoose.Schema({ Student: { type: String }, StudentEmail: { type: String }, selectedInstructor: { type: String } })
+const CourseAssignment = new mongoose.Schema({ Student: { type: String }, StudentEmail: { type: String }, selectedInstructor: { type: String },Date: {
+    type: Date,
+    default: Date.now
+  }
+   })
+
+
+// creating the model for the schema
 const user = mongoose.model('UserSchema', UserSchema);
 const StudentAttendance = mongoose.model('Attendance', Attendance);
 const UploadCourse = mongoose.model('UploadCourse', course);

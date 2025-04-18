@@ -8,7 +8,7 @@ function Auth() {
       if (logined === "false" || !logined) {
         navigate("/LMS/login");
       } else {
-        console.log("User is logged in");
+        console.log("");
       }
     };
     check();
